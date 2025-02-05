@@ -1,0 +1,17 @@
+﻿@model StaffManagement.Models.ViewModels.StaffFilterViewModel
+
+@if (Model?.FilteredStaff != null && Model.FilteredStaff.Any())
+{
+        <div class="container">
+                @foreach (var staff in Model.FilteredStaff)
+                {
+                    <h3>@staff.StaffName</h3>        
+                }
+        </div>
+}
+else
+{
+        <div class="alert alert-info mt-3">
+            No staff members found matching the selected criteria.
+        </div>
+}

@@ -1,0 +1,158 @@
+﻿
+@model StaffManagement.Models.ViewModels.StaffFilterViewModel
+@{
+    ViewData["Title"] = "Staff Details";
+}
+<div class="container">
+    <div class="form-group">
+    <div class="row">
+        <div class="col-md-6">
+            
+                <label for="grantDropdown">Grant</label>
+                @Html.DropDownListFor(m => m.SelectedGrant, 
+                    new SelectList(Model.Grants),
+                    "Select a Grant",
+                    new { @class = "form-select", id = "grantDropdown" })
+            
+        </div>
+        <div class="col-md-1">
+            <label for="staffActiveDropdown">Staff Active</label>
+           @Html.DropDownListFor(m => m.IsStaffActive,
+                    new List<SelectListItem> 
+                    { 
+                        new SelectListItem { Text = "Yes", Value = "true" },
+                        new SelectListItem { Text = "No", Value = "false" }
+                    },
+                    "Select Grant Status",
+                    new { @class = "form-select", id = "staffActiveDropdown", disabled="disbaled"})
+        </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <!-- Left Side - Staff List -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Staff List</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div id="staffListContainer" class="list-group list-group-flush">
+                        <div class="list-group-item text-muted">
+                            Select filters to view staff
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Staff Details -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Staff Details</h5>
+                </div>
+                <div class="card-body" id="staffDetailsContainer">
+                    <p class="text-muted">Select a staff member to view their details</p>
+                </div>
+            </div>
+        </div>
+</div>
+
+@section Scripts {
+         <script>
+        $(document).ready(function() {
+            // Enable/disable Staff Active dropdown based on Grant selection
+            $('#grantDropdown').change(function() {
+                var isGrantSelected = $(this).val() !== "";
+                $('#staffActiveDropdown').prop('disabled', !isGrantSelected);
+                
+                if (!isGrantSelected) {
+                    $('#staffActiveDropdown').val('');
+                    $('#staffListContainer').empty();
+                }
+            });
+
+            // Handle both dropdowns' changes
+            $('#grantDropdown, #staffActiveDropdown').change(function() {
+                var selectedGrant = $('#grantDropdown').val();
+                var isActive = $('#staffActiveDropdown').val();
+                
+                if (selectedGrant && isActive) {
+                    // Show loading indicator
+                    console.log(selectedGrant);
+                    $('#staffListContainer').html('<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+                    
+                    $.ajax({
+                        url: '@Url.Action("FilterStaff", "Staff")',
+                        type: 'GET',
+                        data: { 
+                            selectedGrant: selectedGrant, 
+                            isStaffActive: isActive 
+                        },
+                        success: function(result) {
+                            $('#staffListContainer').html(result);
+                                initializeStaffSelection();
+                        },
+                        error: function(xhr, status, error) {
+                            $('#staffListContainer').html('<div class="alert alert-danger">Error loading staff data. Please try again.</div>');
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            });
+            function initializeStaffSelection() {
+                $('.staff-item').click(function() {
+                    $('.staff-item').removeClass('active');
+                    $(this).addClass('active');
+                    
+                    var staffId = $(this).data('staff-id');
+                    loadStaffDetails(staffId);
+                });
+            }
+            function loadStaffDetails(staffId) {
+                showLoading('#staffDetailsContainer');
+                
+                $.ajax({
+                    url: '@Url.Action("GetStaffDetails", "Staff")',
+                    type: 'GET',
+                    data: { staffId: staffId },
+                    success: function(result) {
+                        $('#staffDetailsContainer').html(result);
+                    },
+                    error: function(xhr, status, error) {
+                        showError('#staffDetailsContainer');
+                    }
+                });
+            }
+                function showLoading(container) {
+                    $(container).html(`
+                        <div class="text-center p-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                function showError(container) {
+                    $(container).html(`
+                        <div class="alert alert-danger m-3">
+                            Error loading data. Please try again.
+                        </div>
+                    `);
+                }
+
+                function clearStaffList() {
+                    $('#staffListContainer').html(`
+                        <div class="list-group-item text-muted">
+                            Select filters to view staff
+                        </div>
+                    `);
+                    $('#staffDetailsContainer').html(`
+                        <p class="text-muted">Select a staff member to view their details</p>
+                    `);
+                }
+        });
+    </script>
+}
+
