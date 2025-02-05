@@ -1,8 +1,9 @@
-﻿namespace StaffManagement.Models.ViewModels;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace StaffManagement.Models.ViewModels;
 public class StaffFilterViewModel
 {
-    public List<string> Grants { get; set; }
     public string SelectedGrant { get; set; }
-    public bool? IsStaffActive { get; set; }
-    public List<Staff> FilteredStaff { get; set; }
+    public string IsStaffActive { get; set; }
+    public IEnumerable<SelectListItem> Grants { get; set; }
 }

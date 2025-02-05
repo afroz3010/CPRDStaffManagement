@@ -1,13 +1,10 @@
-﻿using System;
-
-namespace StaffManagement.Models
+﻿namespace StaffManagement.Models
 {
-    public class Staff
+    public class Grant
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }
-        public DateTime? CertificationDate { get; set; }
+        public bool IsActive { get; set; }
 
         // Navigation property for many-to-many
         public virtual ICollection<StaffGrant> StaffGrants { get; set; }

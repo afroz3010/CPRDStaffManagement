@@ -4,7 +4,11 @@ namespace StaffManagement.Repositories
 {
     public interface IStaffRepository
     {
-        Task<List<string>> GetAllGrantsAsync();
-        Task<List<Staff>> GetStaffByGrantAndStatusAsync(string grantName, bool? isActive);
+        Task<IEnumerable<Grant>> GetActiveGrantsAsync();
+        Task<IEnumerable<Staff>> GetFilteredStaffAsync(int grantId, bool isActive);
+        Task<Staff> GetStaffByIdAsync(int staffId);
+        Task<bool> UpdateStaffAsync(Staff staff);
+        Task<bool> AddStaffAsync(Staff staff);
+        Task<bool> DeleteStaffAsync(int staffId);
     }
 }

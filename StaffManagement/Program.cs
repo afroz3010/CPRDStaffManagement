@@ -1,16 +1,17 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using StaffManagement.Data;
 using StaffManagement.Repositories;
 using StaffManagement.Services;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container
-        builder.Services.AddDbContext<StaffDbContext>(options =>
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         // Dependency Injection
@@ -39,10 +40,20 @@ public class Program
         // Seed data
         using (var scope = app.Services.CreateScope())
         {
-            var context = scope.ServiceProvider.GetRequiredService<StaffDbContext>();
-            DataSeeder.SeedStaffData(context);
+            var services = scope.ServiceProvider;
+            try
+            {
+                var context = services.GetRequiredService<ApplicationDbContext>();
+                await context.Database.MigrateAsync();
+                await DatabaseSeeder.SeedDataAsync(context);
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred while seeding the database.");
+            }
         }
 
-        app.Run();
+        await app.RunAsync();
     }
 }

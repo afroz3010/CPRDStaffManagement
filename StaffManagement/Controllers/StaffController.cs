@@ -21,8 +21,15 @@ namespace StaffManagement.Controllers
         [HttpGet]
         public async Task<IActionResult> FilterStaff(string selectedGrant, bool? isStaffActive)
         {
-            var viewModel = await _staffService.GetStaffFilterDataAsync(selectedGrant, isStaffActive);
-            return PartialView("_FilterStaff",viewModel);
+            var staffList = await _staffService.GetFilteredStaffListAsync(selectedGrant, isStaffActive);
+            return PartialView("_StaffListItem", staffList);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetStaffDetails(int staffId, string selectedGrant)
+        {
+            var staffDetails = await _staffService.GetStaffDetailsAsync(staffId, selectedGrant);
+            return Json(staffDetails);
         }
     }
 }

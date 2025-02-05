@@ -1,0 +1,9 @@
+﻿@model IEnumerable<StaffManagement.Models.ViewModels.StaffDetailsViewModel>
+
+@foreach (var staff in Model)
+{
+    <div role="button" class="list-group-item staff-item" data-staff-id="@staff.StaffId">
+        <h6 class="mb-1">@staff.Name</h6>
+        <small class="text-muted">@staff.Email</small>
+    </div>
+}

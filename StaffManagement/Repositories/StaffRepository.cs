@@ -6,38 +6,88 @@ namespace StaffManagement.Repositories
 {
     public class StaffRepository : IStaffRepository
     {
-        private readonly StaffDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public StaffRepository(StaffDbContext context)
+        public StaffRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<List<string>> GetAllGrantsAsync()
+        public async Task<IEnumerable<Grant>> GetActiveGrantsAsync()
         {
-            return await _context.StaffGrants
-                .Select(g => g.GrantName)
-                .Distinct()
+            return await _context.Grants
+                .Where(g => g.IsActive)
+                .OrderBy(g => g.Name)
                 .ToListAsync();
         }
 
-        public async Task<List<Staff>> GetStaffByGrantAndStatusAsync(string grantName, bool? isActive)
+        public async Task<IEnumerable<Staff>> GetFilteredStaffAsync(int grantId, bool isActive)
         {
-            var query = _context.StaffGrants
-                .Include(sg => sg.Staff)
-                .Where(sg => sg.GrantName == grantName);
+            return await _context.Staff
+                .Include(s => s.StaffGrants)
+                    .ThenInclude(sg => sg.Grant) // Include the Grant entity through StaffGrant
+                .Where(s => s.StaffGrants.Any(sg => sg.GrantId == grantId && sg.IsActive == isActive))
+                .OrderBy(s => s.Name)
+                .ToListAsync();
+        }
 
-            if (isActive.HasValue)
+        public async Task<Staff> GetStaffByIdAsync(int staffId)
+        {
+            return await _context.Staff
+                .Include(s => s.StaffGrants)
+                .ThenInclude(sg => sg.Grant)
+                .FirstOrDefaultAsync(s => s.Id == staffId);
+        }
+
+        public async Task<bool> UpdateStaffAsync(Staff staff)
+        {
+            try
             {
-                query = isActive.Value
-                    ? query.Where(sg => sg.EndDate == null)
-                    : query.Where(sg => sg.EndDate != null);
+                _context.Entry(staff).State = EntityState.Modified;
+                foreach (var staffGrant in staff.StaffGrants)
+                {
+                    _context.Entry(staffGrant).State = staffGrant.StaffId == 0 && staffGrant.GrantId == 0 ? EntityState.Added : EntityState.Modified;
+                }
+                await _context.SaveChangesAsync();
+                return true;
             }
-
-            return await query
-                .Select(sg => sg.Staff)
-                .Distinct()
-                .ToListAsync();
+            catch
+            {
+                return false;
+            }
         }
+
+        public async Task<bool> AddStaffAsync(Staff staff)
+        {
+            try
+            {
+                await _context.Staff.AddAsync(staff);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteStaffAsync(int staffId)
+        {
+            try
+            {
+                var staff = await _context.Staff.Include(s => s.StaffGrants).FirstOrDefaultAsync(s => s.Id == staffId);
+                if (staff == null) return false;
+
+                _context.StaffGrants.RemoveRange(staff.StaffGrants);
+                _context.Staff.Remove(staff);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }

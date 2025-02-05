@@ -1,125 +1,162 @@
-﻿using StaffManagement.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using StaffManagement.Models;
 
 namespace StaffManagement.Data
 {
-    // Data/DataSeeder.cs
-    public static class DataSeeder
+    public static class DatabaseSeeder
     {
-        public static void SeedStaffData(StaffDbContext context)
+        public static async Task SeedDataAsync(ApplicationDbContext context)
         {
-            // Ensure database is created
-            context.Database.EnsureCreated();
+            if (await context.Grants.AnyAsync() || await context.Staff.AnyAsync())
+                return;
 
-            // Check if data already exists to prevent duplicate seeding
-            if (!context.Staffs.Any())
+            // Add Grants
+            var grants = new List<Grant>
             {
-                // Create staff members with their associated grants
-                var staffMembers = new List<Staff>
+                new Grant { Name = "ABC", IsActive = true },
+                new Grant { Name = "FFM", IsActive = true },
+                new Grant { Name = "MZMSH", IsActive = true }
+            };
+
+            await context.Grants.AddRangeAsync(grants);
+            await context.SaveChangesAsync();
+
+            // Add Staff
+            var staffList = new List<Staff>
             {
                 new Staff
                 {
-                    StaffName = "David Baluga",
+                    Name = "David Baluga",
                     Email = "DavB@CPRD.EDU",
-                    CertificationDate = new DateTime(2024, 4, 5),
-                    StaffGrants = new List<StaffGrant>
-                    {
-                        new StaffGrant
-                        {
-                            GrantName = "ABC",
-                            StartDate = new DateTime(2024, 2, 7),
-                            EndDate = null
-                        },
-                        new StaffGrant
-                        {
-                            GrantName = "FFM",
-                            StartDate = new DateTime(2024, 5, 5),
-                            EndDate = null
-                        },
-                        new StaffGrant
-                        {
-                            GrantName = "MZMSH",
-                            StartDate = new DateTime(2024, 5, 5),
-                            EndDate = null
-                        }
-                    }
+                    CertificationDate = new DateTime(2024, 4, 5)
                 },
                 new Staff
                 {
-                    StaffName = "Mishe Smith",
+                    Name = "Mishe Smith",
                     Email = "Mish1980@CPRD.EDU",
-                    CertificationDate = new DateTime(2023, 7, 8),
-                    StaffGrants = new List<StaffGrant>
-                    {
-                        new StaffGrant
-                        {
-                            GrantName = "ABC",
-                            StartDate = new DateTime(2024, 2, 7),
-                            EndDate = null
-                        },
-                        new StaffGrant
-                        {
-                            GrantName = "FFM",
-                            StartDate = new DateTime(2023, 8, 8),
-                            EndDate = new DateTime(2024, 1, 7)
-                        }
-                    }
+                    CertificationDate = new DateTime(2023, 7, 8)
                 },
                 new Staff
                 {
-                    StaffName = "Bradely Smith",
+                    Name = "Bradely Smith",
                     Email = "BSmith55@CPRD.EDU",
-                    CertificationDate = new DateTime(2023, 5, 24),
-                    StaffGrants = new List<StaffGrant>
-                    {
-                        new StaffGrant
-                        {
-                            GrantName = "ABC",
-                            StartDate = new DateTime(2023, 5, 25),
-                            EndDate = null
-                        },
-                        new StaffGrant
-                        {
-                            GrantName = "FFM",
-                            StartDate = new DateTime(2023, 5, 25),
-                            EndDate = null
-                        },
-                        new StaffGrant
-                        {
-                            GrantName = "MZMSH",
-                            StartDate = new DateTime(2023, 5, 25),
-                            EndDate = null
-                        }
-                    }
+                    CertificationDate = new DateTime(2023, 5, 24)
                 },
                 new Staff
                 {
-                    StaffName = "Gloria Marshel",
+                    Name = "Gloria Marshel",
                     Email = "GLSmith356@CPRD.EDU",
-                    CertificationDate = new DateTime(2023, 8, 2),
-                    StaffGrants = new List<StaffGrant>
-                    {
-                        new StaffGrant
-                        {
-                            GrantName = "ABC",
-                            StartDate = new DateTime(2023, 8, 8),
-                            EndDate = new DateTime(2024, 2, 7)
-                        },
-                        new StaffGrant
-                        {
-                            GrantName = "FFM",
-                            StartDate = new DateTime(2024, 8, 8),
-                            EndDate = null
-                        }
-                    }
+                    CertificationDate = new DateTime(2023, 8, 2)
                 }
             };
 
-                // Add the staff members to the context
-                context.Staffs.AddRange(staffMembers);
+            await context.Staff.AddRangeAsync(staffList);
+            await context.SaveChangesAsync();
 
-                // Save changes to the database
-                context.SaveChanges();
-            }
+            // Get references for relationships
+            var abcGrant = await context.Grants.FirstAsync(g => g.Name == "ABC");
+            var ffmGrant = await context.Grants.FirstAsync(g => g.Name == "FFM");
+            var mzmshGrant = await context.Grants.FirstAsync(g => g.Name == "MZMSH");
+
+            var davidBaluga = await context.Staff.FirstAsync(s => s.Email == "DavB@CPRD.EDU");
+            var misheSmith = await context.Staff.FirstAsync(s => s.Email == "Mish1980@CPRD.EDU");
+            var bradelySmith = await context.Staff.FirstAsync(s => s.Email == "BSmith55@CPRD.EDU");
+            var gloriaMarshel = await context.Staff.FirstAsync(s => s.Email == "GLSmith356@CPRD.EDU");
+
+            // Add StaffGrants relationships
+            var staffGrants = new List<StaffGrant>
+            {
+                // David Baluga
+                new StaffGrant
+                {
+                    StaffId = davidBaluga.Id,
+                    GrantId = abcGrant.Id,
+                    StartDate = new DateTime(2024, 2, 7),
+                    EndDate = null,
+                    IsActive = true
+                },
+                new StaffGrant
+                {
+                    StaffId = davidBaluga.Id,
+                    GrantId = ffmGrant.Id,
+                    StartDate = new DateTime(2024, 5, 5),
+                    EndDate = null,
+                    IsActive = true
+                },
+                new StaffGrant
+                {
+                    StaffId = davidBaluga.Id,
+                    GrantId = mzmshGrant.Id,
+                    StartDate = new DateTime(2024, 5, 5),
+                    EndDate = null,
+                    IsActive = true
+                },
+
+                // Mishe Smith
+                new StaffGrant
+                {
+                    StaffId = misheSmith.Id,
+                    GrantId = abcGrant.Id,
+                    StartDate = new DateTime(2024, 2, 7),
+                    EndDate = null,
+                    IsActive = true
+                },
+                new StaffGrant
+                {
+                    StaffId = misheSmith.Id,
+                    GrantId = ffmGrant.Id,
+                    StartDate = new DateTime(2023, 8, 8),
+                    EndDate = new DateTime(2024, 1, 7),
+                    IsActive = false
+                },
+
+                // Bradely Smith
+                new StaffGrant
+                {
+                    StaffId = bradelySmith.Id,
+                    GrantId = abcGrant.Id,
+                    StartDate = new DateTime(2023, 5, 25),
+                    EndDate = null,
+                    IsActive = true
+                },
+                new StaffGrant
+                {
+                    StaffId = bradelySmith.Id,
+                    GrantId = ffmGrant.Id,
+                    StartDate = new DateTime(2023, 5, 25),
+                    EndDate = null,
+                    IsActive = true
+                },
+                new StaffGrant
+                {
+                    StaffId = bradelySmith.Id,
+                    GrantId = mzmshGrant.Id,
+                    StartDate = new DateTime(2023, 5, 25),
+                    EndDate = null,
+                    IsActive = true
+                },
+
+                // Gloria Marshel
+                new StaffGrant
+                {
+                    StaffId = gloriaMarshel.Id,
+                    GrantId = abcGrant.Id,
+                    StartDate = new DateTime(2023, 8, 8),
+                    EndDate = new DateTime(2024, 2, 7),
+                    IsActive = false
+                },
+                new StaffGrant
+                {
+                    StaffId = gloriaMarshel.Id,
+                    GrantId = ffmGrant.Id,
+                    StartDate = new DateTime(2024, 8, 8),
+                    EndDate = null,
+                    IsActive = true
+                }
+            };
+
+            await context.StaffGrants.AddRangeAsync(staffGrants);
+            await context.SaveChangesAsync();
         }
     }
 }
