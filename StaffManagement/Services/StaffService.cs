@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using StaffManagement.Models;
 using StaffManagement.Models.ViewModels;
 using StaffManagement.Repositories;
 
@@ -45,8 +44,7 @@ namespace StaffManagement.Services
                     GrantId = sg.GrantId,
                     GrantName = sg.Grant.Name,
                     StartDate = sg.StartDate,
-                    EndDate = sg.EndDate,
-                    IsActive = sg.IsActive
+                    EndDate = sg.EndDate
                 }).FirstOrDefault()
             });
         }
@@ -68,8 +66,7 @@ namespace StaffManagement.Services
                     GrantId = sg.GrantId,
                     GrantName = sg.Grant.Name,
                     StartDate = sg.StartDate,
-                    EndDate = sg.EndDate,
-                    IsActive = sg.IsActive
+                    EndDate = sg.EndDate
                 }).FirstOrDefault()
             };
         }

@@ -13,9 +13,9 @@ namespace StaffManagement.Data
             // Add Grants
             var grants = new List<Grant>
             {
-                new Grant { Name = "ABC", IsActive = true },
-                new Grant { Name = "FFM", IsActive = true },
-                new Grant { Name = "MZMSH", IsActive = true }
+                new Grant { Name = "ABC" },
+                new Grant { Name = "FFM" },
+                new Grant { Name = "MZMSH" }
             };
 
             await context.Grants.AddRangeAsync(grants);
@@ -72,24 +72,21 @@ namespace StaffManagement.Data
                     StaffId = davidBaluga.Id,
                     GrantId = abcGrant.Id,
                     StartDate = new DateTime(2024, 2, 7),
-                    EndDate = null,
-                    IsActive = true
+                    EndDate = null
                 },
                 new StaffGrant
                 {
                     StaffId = davidBaluga.Id,
                     GrantId = ffmGrant.Id,
                     StartDate = new DateTime(2024, 5, 5),
-                    EndDate = null,
-                    IsActive = true
+                    EndDate = null
                 },
                 new StaffGrant
                 {
                     StaffId = davidBaluga.Id,
                     GrantId = mzmshGrant.Id,
                     StartDate = new DateTime(2024, 5, 5),
-                    EndDate = null,
-                    IsActive = true
+                    EndDate = null
                 },
 
                 // Mishe Smith
@@ -98,16 +95,14 @@ namespace StaffManagement.Data
                     StaffId = misheSmith.Id,
                     GrantId = abcGrant.Id,
                     StartDate = new DateTime(2024, 2, 7),
-                    EndDate = null,
-                    IsActive = true
+                    EndDate = null
                 },
                 new StaffGrant
                 {
                     StaffId = misheSmith.Id,
                     GrantId = ffmGrant.Id,
                     StartDate = new DateTime(2023, 8, 8),
-                    EndDate = new DateTime(2024, 1, 7),
-                    IsActive = false
+                    EndDate = new DateTime(2024, 1, 7)
                 },
 
                 // Bradely Smith
@@ -116,24 +111,21 @@ namespace StaffManagement.Data
                     StaffId = bradelySmith.Id,
                     GrantId = abcGrant.Id,
                     StartDate = new DateTime(2023, 5, 25),
-                    EndDate = null,
-                    IsActive = true
+                    EndDate = null
                 },
                 new StaffGrant
                 {
                     StaffId = bradelySmith.Id,
                     GrantId = ffmGrant.Id,
                     StartDate = new DateTime(2023, 5, 25),
-                    EndDate = null,
-                    IsActive = true
+                    EndDate = null
                 },
                 new StaffGrant
                 {
                     StaffId = bradelySmith.Id,
                     GrantId = mzmshGrant.Id,
                     StartDate = new DateTime(2023, 5, 25),
-                    EndDate = null,
-                    IsActive = true
+                    EndDate = null
                 },
 
                 // Gloria Marshel
@@ -142,16 +134,14 @@ namespace StaffManagement.Data
                     StaffId = gloriaMarshel.Id,
                     GrantId = abcGrant.Id,
                     StartDate = new DateTime(2023, 8, 8),
-                    EndDate = new DateTime(2024, 2, 7),
-                    IsActive = false
+                    EndDate = new DateTime(2024, 2, 7)
                 },
                 new StaffGrant
                 {
                     StaffId = gloriaMarshel.Id,
                     GrantId = ffmGrant.Id,
                     StartDate = new DateTime(2024, 8, 8),
-                    EndDate = null,
-                    IsActive = true
+                    EndDate = null
                 }
             };
 

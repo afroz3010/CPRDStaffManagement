@@ -6,7 +6,6 @@
         public int GrantId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public bool IsActive { get; set; }
 
         // Navigation properties
         public virtual Staff Staff { get; set; }
