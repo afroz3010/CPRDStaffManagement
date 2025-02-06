@@ -35,7 +35,7 @@ public class Program
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+            pattern: "{controller=Staff}/{action=Index}");
 
         // Seed data
         using (var scope = app.Services.CreateScope())

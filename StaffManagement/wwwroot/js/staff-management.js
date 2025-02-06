@@ -15,12 +15,15 @@
 
     // Handle both dropdowns' changes
     $('#grantDropdown, #staffActiveDropdown').change(function () {
-        clearStaffDetails();
+        clearStaffDetails();    
         const selectedGrant = $('#grantDropdown').val();
         const isActive = $('#staffActiveDropdown').val();
 
         if (selectedGrant && isActive) {
             loadStaffList(selectedGrant, isActive);
+        }
+        else {
+            clearStaffList();
         }
     });
 

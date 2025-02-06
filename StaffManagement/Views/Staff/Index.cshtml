@@ -6,15 +6,15 @@
 <div class="container">
     <div class="form-group">
         <div class="row">
-            <div class="col-md-6">
-                <label for="grantDropdown">Grant</label>
-                @Html.DropDownListFor(m => m.SelectedGrant,
-                         Model.Grants,
-                         "Select a Grant",
-                         new { @class = "form-select", id = "grantDropdown" })
+            <div class="col-md-6 d-flex align-items-center">
+                <label for="grantDropdown" class="me-2">Grant:</label>
+                    @Html.DropDownListFor(m => m.SelectedGrant,
+                             Model.Grants,
+                             "Select a Grant",
+                             new { @class = "form-select", id = "grantDropdown", style = "width: 250px;" })
             </div>
-            <div class="col-md-3">
-                <label for="staffActiveDropdown">Staff Active</label>
+            <div class="col-md-3 d-flex align-items-center">
+                <label for="staffActiveDropdown" class="me-2">Active:</label>
                 @Html.DropDownListFor(m => m.IsStaffActive,
                          new List<SelectListItem>
                 {
@@ -22,16 +22,16 @@
                 new SelectListItem { Text = "No", Value = "false" }
                 },
                          "Select Status",
-                         new { @class = "form-select", id = "staffActiveDropdown", disabled = "disabled" })
+                         new { @class = "form-select", id = "staffActiveDropdown", disabled = "disabled", style = "width: 250px;" })
             </div>
         </div>
     </div>
 
     <div class="row mt-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             @await Html.PartialAsync("_StaffList")
         </div>
-        <div class="col-md-8">
+        <div class="col-md-9">
             @await Html.PartialAsync("_StaffDetails")
         </div>
     </div>

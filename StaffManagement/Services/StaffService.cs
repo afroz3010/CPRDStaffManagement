@@ -32,7 +32,6 @@ namespace StaffManagement.Services
         {
             if (!int.TryParse(selectedGrant, out int grantId) || !isStaffActive.HasValue)
                 return Enumerable.Empty<StaffDetailsViewModel>();
-            Console.WriteLine(grantId);
             var staffList = await _staffRepository.GetFilteredStaffAsync(grantId, isStaffActive.Value);
 
             return staffList.Select(s => new StaffDetailsViewModel

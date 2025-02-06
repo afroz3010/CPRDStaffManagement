@@ -25,8 +25,10 @@ namespace StaffManagement.Repositories
         {
             return await _context.Staff
                 .Include(s => s.StaffGrants)
-                    .ThenInclude(sg => sg.Grant) // Include the Grant entity through StaffGrant
-                .Where(s => s.StaffGrants.Any(sg => sg.GrantId == grantId && sg.IsActive == isActive))
+                    .ThenInclude(sg => sg.Grant)
+                .Where(s => s.StaffGrants.Any(sg =>
+                    sg.GrantId == grantId &&
+                    (isActive ? sg.EndDate == null : sg.EndDate != null))) 
                 .OrderBy(s => s.Name)
                 .ToListAsync();
         }
