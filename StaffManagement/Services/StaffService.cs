@@ -13,9 +13,9 @@ namespace StaffManagement.Services
             _staffRepository = staffRepository;
         }
 
-        public async Task<StaffFilterViewModel> GetStaffFilterDataAsync()
+        public async Task<StaffFilterViewModel> GetGrantsDataAsync()
         {
-            var grants = await _staffRepository.GetActiveGrantsAsync();
+            var grants = await _staffRepository.GetGrantsListAsync();
 
             return new StaffFilterViewModel
             {

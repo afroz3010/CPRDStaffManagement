@@ -13,7 +13,7 @@ namespace StaffManagement.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Grant>> GetActiveGrantsAsync()
+        public async Task<IEnumerable<Grant>> GetGrantsListAsync()
         {
             return await _context.Grants
                 .OrderBy(g => g.Name)
