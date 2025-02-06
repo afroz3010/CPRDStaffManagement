@@ -1,7 +1,7 @@
 # CPRD Staff Management System
 
 ## Overview
-The Staff Management System is a web application designed to manage staff assignments across different grants. It allows users to filter staff by grant and active status, view staff details, and manage staff-grant relationships.
+The CPRD Staff Management System is a web application designed to manage staff assignments across different grants. It allows users to filter staff by grant and active status, and view staff details. The system is built using ASP.NET MVC for the backend and Bootstrap and jQuery for the frontend..
 
 ## Prerequisites
 - .NET 6.0 SDK
